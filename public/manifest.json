@@ -1,0 +1,22 @@
+{
+  "name": "Adaptive Icon Generator",
+  "short_name": "IconGen",
+  "description": "Generate Android adaptive icons and iOS app icons from any image",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
