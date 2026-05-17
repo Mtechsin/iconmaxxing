@@ -4,6 +4,35 @@ Generate production-ready **Android adaptive icons** and **iOS app icons** from 
 
 ![CI](https://github.com/YOUR_USERNAME/iconmaxxing/actions/workflows/ci.yml/badge.svg)
 
+**[Live Demo](https://iconizer.amadoson3001.workers.dev)** — try it now, no install needed.
+
+---
+
+## Showcase
+
+| Feature | Preview |
+|---------|---------|
+| Upload any image | ![Upload](assets/Screenshots/upload.png) |
+| Canvas editor with drag & zoom | ![Editor](assets/Screenshots/editor.png) |
+| Background picker & color presets | ![Background](assets/Screenshots/background.png) |
+| Monochrome threshold control | ![Monochrome](assets/Screenshots/monochrome.png) |
+| Live mask previews (circle, squircle, iOS) | ![Masks](assets/Screenshots/masks.png) |
+| Device mockups (Pixel & iPhone) | ![Mockups](assets/Screenshots/mockups.png) |
+| Export Android & iOS ZIPs | ![Export](assets/Screenshots/export.png) |
+
+<details>
+<summary><strong>Full Preview — Upload to Final Icon</strong></summary>
+
+**Step 1: Upload your image**
+
+![Upload](assets/Screenshots/upload.png)
+
+**Step 2: Edit, position, and export**
+
+![Website](assets/Screenshots/website.png)
+
+</details>
+
 ---
 
 ## Features
