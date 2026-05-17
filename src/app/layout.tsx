@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ServiceWorkerManager } from "@/components/ServiceWorkerManager";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,14 +22,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Adaptive Icon Generator",
+  title: "IconMaxxing",
   description:
     "Generate Android adaptive icons and iOS app icons from any image. Works offline.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "IconGen",
+    title: "IconMaxxing",
   },
 };
 
@@ -50,17 +51,8 @@ export default function RootLayout({
         <TooltipProvider>
           {children}
         </TooltipProvider>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js');
-                });
-              }
-            `,
-          }}
-        />
+        {/* Only register SW in production — avoids stale-cache issues during dev */}
+        {process.env.NODE_ENV === "production" && <ServiceWorkerManager />}
       </body>
     </html>
   );

@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
+import LayersIcon from "@/components/ui/layers-icon";
 import { renderForExport } from "@/lib/canvas/renderer";
 import { applyMask, applyIOSMask } from "@/lib/canvas/masks";
 import type { EditorState, MaskShape } from "@/types";
@@ -31,7 +32,7 @@ export function MaskPreview({
   useEffect(() => {
     if (!sourceImage) return;
 
-    const previewSize = 120;
+    const previewSize = 96;
     const compositeCanvas = renderForExport(
       previewSize,
       sourceImage,
@@ -70,35 +71,38 @@ export function MaskPreview({
   if (!sourceImage) return null;
 
   return (
-    <Card className="flex flex-col gap-3 p-4">
-      <h3 className="text-sm font-medium text-muted-foreground">
-        Preview Masks
-      </h3>
+    <Card className="flex flex-col gap-2 p-2 md:p-3">
+      <div className="flex items-center gap-2">
+        <LayersIcon className="h-3.5 w-3.5 text-muted-foreground" />
+        <h3 className="text-s font-medium text-muted-foreground">Preview Masks</h3>
+      </div>
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 gap-1.5 md:gap-2">
         {MASKS.map((mask, i) => (
-          <div key={mask.shape} className="flex flex-col items-center gap-1.5">
+          <div key={mask.shape} className="flex flex-col items-center gap-1">
             <canvas
               ref={(el) => { canvasRefs.current[i] = el; }}
-              width={120}
-              height={120}
               className="rounded border border-border bg-muted/20"
-              style={{ width: 80, height: 80 }}
+              style={{
+                width: "clamp(44px, 6vw, 76px)",
+                height: "clamp(44px, 6vw, 76px)",
+                aspectRatio: "1",
+              }}
             />
-            <span className="text-[10px] text-muted-foreground">
-              {mask.label}
-            </span>
+            <span className="text-[9px] text-muted-foreground">{mask.label}</span>
           </div>
         ))}
-        <div className="flex flex-col items-center gap-1.5">
+        <div className="flex flex-col items-center gap-1">
           <canvas
             ref={iosCanvasRef}
-            width={120}
-            height={120}
             className="rounded border border-border bg-muted/20"
-            style={{ width: 80, height: 80 }}
+            style={{
+              width: "clamp(44px, 6vw, 76px)",
+              height: "clamp(44px, 6vw, 76px)",
+              aspectRatio: "1",
+            }}
           />
-          <span className="text-[10px] text-muted-foreground">iOS</span>
+          <span className="text-[9px] text-muted-foreground">iOS</span>
         </div>
       </div>
     </Card>

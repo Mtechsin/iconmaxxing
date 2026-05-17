@@ -1,5 +1,6 @@
 import type { EditorState } from "@/types";
 import { SAFE_ZONE_RATIO } from "@/lib/constants";
+import { getContext2D } from "@/lib/utils";
 
 /**
  * Render the composite icon (background + foreground) onto a canvas.
@@ -81,7 +82,7 @@ export function renderForExport(
   const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = getContext2D(canvas);
 
   // Scale factor relative to the working canvas (432px)
   const scaleFactor = size / 432;

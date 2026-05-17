@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sitemap (optional - single page app)
+# Sitemap: https://your-domain.com/sitemap.xml

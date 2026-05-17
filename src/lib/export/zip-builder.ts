@@ -1,7 +1,7 @@
 import JSZip from "jszip";
 import type { EditorState } from "@/types";
 import type { ExportTarget } from "@/types";
-import { ANDROID_DENSITIES, IOS_SIZES } from "@/lib/constants";
+import { ANDROID_DENSITIES, IOS_ICON_ENTRIES } from "@/lib/constants";
 import { renderForExport } from "@/lib/canvas/renderer";
 import { renderMonochrome } from "@/lib/canvas/monochrome";
 import { applyIOSMask } from "@/lib/canvas/masks";
@@ -60,30 +60,71 @@ export async function buildAndDownloadZip(options: ExportOptions): Promise<void>
 }
 
 async function buildAndroidZip(zip: JSZip, options: ExportOptions) {
-  const { sourceImage, backgroundColor, backgroundImage, editor, monochromeThreshold, monochromeInvert } = options;
+  const {
+    sourceImage,
+    backgroundColor,
+    backgroundImage,
+    editor,
+    monochromeThreshold,
+    monochromeInvert,
+  } = options;
 
-  // Render at max size (432 = xxxhdpi) then resize down
-  const fgFull = renderForExport(432, sourceImage, backgroundColor, backgroundImage, editor, "foreground");
-  const bgFull = renderForExport(432, sourceImage, backgroundColor, backgroundImage, editor, "background");
-  const monoFull = renderMonochrome(432, sourceImage, editor, monochromeThreshold, monochromeInvert);
+  let fgFull: HTMLCanvasElement | null = null;
+  let bgFull: HTMLCanvasElement | null = null;
+  let monoFull: HTMLCanvasElement | null = null;
 
+  try {
+    // Render at max size (432 = xxxhdpi) then resize down
+    fgFull = renderForExport(432, sourceImage, backgroundColor, backgroundImage, editor, "foreground");
+    bgFull = renderForExport(
+      432,
+      sourceImage,
+      backgroundColor,
+      backgroundImage,
+      { offsetX: 0, offsetY: 0, scale: 1 },
+      "background"
+    );
+    monoFull = renderMonochrome(432, sourceImage, editor, monochromeThreshold, monochromeInvert);
+  } catch (error) {
+    throw new Error(`Failed to create Android source canvases: ${getErrorMessage(error)}. Try closing other apps to free memory.`);
+  }
+
+  // Process each density sequentially to minimize memory usage
   for (const { name, size } of ANDROID_DENSITIES) {
     const folder = zip.folder(`res/mipmap-${name}`)!;
 
-    const fgResized = resizeCanvas(fgFull, size);
-    const bgResized = resizeCanvas(bgFull, size);
-    const monoResized = resizeCanvas(monoFull, size);
+    let fgResized: HTMLCanvasElement | null = null;
+    let bgResized: HTMLCanvasElement | null = null;
+    let monoResized: HTMLCanvasElement | null = null;
 
-    const [fgBlob, bgBlob, monoBlob] = await Promise.all([
-      canvasToBlob(fgResized),
-      canvasToBlob(bgResized),
-      canvasToBlob(monoResized),
-    ]);
+    try {
+      fgResized = resizeCanvas(fgFull, size);
+      bgResized = resizeCanvas(bgFull, size);
+      monoResized = resizeCanvas(monoFull, size);
 
-    folder.file("ic_launcher_foreground.png", fgBlob);
-    folder.file("ic_launcher_background.png", bgBlob);
-    folder.file("ic_launcher_monochrome.png", monoBlob);
+      const [fgBlob, bgBlob, monoBlob] = await Promise.all([
+        canvasToBlob(fgResized),
+        canvasToBlob(bgResized),
+        canvasToBlob(monoResized),
+      ]);
+
+      folder.file("ic_launcher_foreground.png", fgBlob);
+      folder.file("ic_launcher_background.png", bgBlob);
+      folder.file("ic_launcher_monochrome.png", monoBlob);
+    } catch (error) {
+      throw new Error(`Failed to render Android ${name} icons: ${getErrorMessage(error)}. Try closing other apps to free memory.`);
+    } finally {
+      // Explicitly release canvas references for garbage collection
+      fgResized = null;
+      bgResized = null;
+      monoResized = null;
+    }
   }
+
+  // Release source canvases
+  fgFull = null;
+  bgFull = null;
+  monoFull = null;
 
   // XML files
   const anydpiFolder = zip.folder("res/mipmap-anydpi-v26")!;
@@ -96,16 +137,44 @@ async function buildIOSZip(zip: JSZip, options: ExportOptions) {
 
   const iconsetFolder = zip.folder("AppIcon.appiconset")!;
 
-  // Render composite at 1024 then apply iOS mask and resize
-  const compositeFull = renderForExport(1024, sourceImage, backgroundColor, backgroundImage, editor, "composite");
+  let compositeFull: HTMLCanvasElement | null = null;
+  let maskedFull: HTMLCanvasElement | null = null;
 
-  for (const size of IOS_SIZES) {
-    const resized = resizeCanvas(compositeFull, size);
-    const masked = applyIOSMask(resized, size);
-    const blob = await canvasToBlob(masked);
-    iconsetFolder.file(`icon_${size}x${size}.png`, blob);
+  try {
+    // Render composite at 1024 then apply iOS mask
+    compositeFull = renderForExport(1024, sourceImage, backgroundColor, backgroundImage, editor, "composite");
+    maskedFull = applyIOSMask(compositeFull, 1024);
+  } catch (error) {
+    throw new Error(`Failed to create iOS source canvas: ${getErrorMessage(error)}. Try closing other apps to free memory.`);
+  } finally {
+    // Release composite canvas immediately after masking
+    compositeFull = null;
   }
+
+  // Process each iOS size sequentially to minimize memory usage
+  for (const entry of IOS_ICON_ENTRIES) {
+    const size = entry.pixelSize;
+    let resized: HTMLCanvasElement | null = null;
+
+    try {
+      resized = resizeCanvas(maskedFull, size);
+      const blob = await canvasToBlob(resized);
+      iconsetFolder.file(`icon_${size}x${size}.png`, blob);
+    } catch (error) {
+      throw new Error(`Failed to render iOS ${size}x${size} icon: ${getErrorMessage(error)}. Try closing other apps to free memory.`);
+    } finally {
+      // Release resized canvas immediately
+      resized = null;
+    }
+  }
+
+  // Release masked canvas
+  maskedFull = null;
 
   // Contents.json
   iconsetFolder.file("Contents.json", generateFullContentsJson());
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

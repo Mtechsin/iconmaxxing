@@ -3,7 +3,7 @@
  * with a full precache manifest so the PWA works offline from the first visit.
  */
 
-import { readdir, stat, writeFile } from "node:fs/promises";
+import { readdir, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";

@@ -1,4 +1,5 @@
 import type { MaskShape } from "@/types";
+import { getContext2D } from "@/lib/utils";
 
 /**
  * Apply a mask shape to a canvas and return the clipped result.
@@ -11,7 +12,7 @@ export function applyMask(
   const canvas = document.createElement("canvas");
   canvas.width = outputSize;
   canvas.height = outputSize;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = getContext2D(canvas);
 
   ctx.save();
 
@@ -80,7 +81,7 @@ export function applyIOSMask(
   const canvas = document.createElement("canvas");
   canvas.width = outputSize;
   canvas.height = outputSize;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = getContext2D(canvas);
 
   // iOS uses ~22.37% corner radius relative to icon size
   const radius = outputSize * 0.2237;

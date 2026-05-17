@@ -1,4 +1,5 @@
 import type { EditorState } from "@/types";
+import { getContext2D } from "@/lib/utils";
 import { renderForExport } from "./renderer";
 
 /**
@@ -14,7 +15,7 @@ export function renderMonochrome(
 ): HTMLCanvasElement {
   // First render the foreground only
   const fgCanvas = renderForExport(size, sourceImage, "#000000", null, editor, "foreground");
-  const fgCtx = fgCanvas.getContext("2d")!;
+  const fgCtx = getContext2D(fgCanvas);
   const imageData = fgCtx.getImageData(0, 0, size, size);
   const data = imageData.data;
 
@@ -22,7 +23,7 @@ export function renderMonochrome(
   const outCanvas = document.createElement("canvas");
   outCanvas.width = size;
   outCanvas.height = size;
-  const outCtx = outCanvas.getContext("2d")!;
+  const outCtx = getContext2D(outCanvas);
   const outData = outCtx.createImageData(size, size);
   const out = outData.data;
 

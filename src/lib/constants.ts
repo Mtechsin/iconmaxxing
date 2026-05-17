@@ -7,8 +7,24 @@ export const ANDROID_DENSITIES = [
   { name: "xxxhdpi", size: 432 },
 ] as const;
 
-// iOS icon sizes (Xcode 15+ uses single 1024, but we also export common sizes)
-export const IOS_SIZES = [1024, 180, 120, 87, 80, 76, 60, 58, 40, 29, 20] as const;
+// iOS icon entries: point size + scale per Apple's Contents.json spec
+export const IOS_ICON_ENTRIES = [
+  { pointSize: "1024x1024", scale: "1x", idiom: "ios-marketing", platform: "ios", pixelSize: 1024 },
+  { pointSize: "60x60", scale: "3x", idiom: "universal", pixelSize: 180 },
+  { pointSize: "83.5x83.5", scale: "2x", idiom: "universal", pixelSize: 167 },
+  { pointSize: "76x76", scale: "2x", idiom: "universal", pixelSize: 152 },
+  { pointSize: "40x40", scale: "3x", idiom: "universal", pixelSize: 120 },
+  { pointSize: "29x29", scale: "3x", idiom: "universal", pixelSize: 87 },
+  { pointSize: "40x40", scale: "2x", idiom: "universal", pixelSize: 80 },
+  { pointSize: "76x76", scale: "1x", idiom: "universal", pixelSize: 76 },
+  { pointSize: "60x60", scale: "1x", idiom: "universal", pixelSize: 60 },
+  { pointSize: "29x29", scale: "2x", idiom: "universal", pixelSize: 58 },
+  { pointSize: "40x40", scale: "1x", idiom: "universal", pixelSize: 40 },
+  { pointSize: "29x29", scale: "1x", idiom: "universal", pixelSize: 29 },
+  { pointSize: "20x20", scale: "1x", idiom: "universal", pixelSize: 20 },
+] as const;
+
+export const IOS_SIZES = IOS_ICON_ENTRIES.map((e) => e.pixelSize) as readonly number[];
 
 // Android adaptive icon safe zone: 66% of the 108dp canvas
 export const SAFE_ZONE_RATIO = 66 / 108;
@@ -22,6 +38,15 @@ export const FOREGROUND_RATIO = 72 / 108;
 
 // Default background color
 export const DEFAULT_BG_COLOR = "#4F46E5";
+
+// Max upload file size (10 MB)
+export const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+// Minimum image dimensions (warn if smaller)
+export const MIN_IMAGE_DIMENSION = 72;
+
+// Maximum image dimensions (reject if larger to prevent memory issues)
+export const MAX_IMAGE_DIMENSION = 4096;
 
 // Color presets for background picker
 export const COLOR_PRESETS = [

@@ -14,16 +14,10 @@ export function generateAdaptiveIconXml(): string {
 }
 
 /**
- * Android round icon XML template
+ * Android round icon XML template — same structure as adaptive icon.
  */
 export function generateRoundIconXml(): string {
-  return `<?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@mipmap/ic_launcher_background"/>
-    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
-    <monochrome android:drawable="@mipmap/ic_launcher_monochrome"/>
-</adaptive-icon>
-`;
+  return generateAdaptiveIconXml();
 }
 
 /**

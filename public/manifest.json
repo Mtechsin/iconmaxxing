@@ -1,6 +1,6 @@
 {
-  "name": "Adaptive Icon Generator",
-  "short_name": "IconGen",
+  "name": "IconMaxxing",
+  "short_name": "IconMaxxing",
   "description": "Generate Android adaptive icons and iOS app icons from any image",
   "start_url": "/",
   "display": "standalone",
