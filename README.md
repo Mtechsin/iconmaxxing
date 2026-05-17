@@ -10,26 +10,21 @@ Generate production-ready **Android adaptive icons** and **iOS app icons** from 
 
 ## Showcase
 
-| Feature | Preview |
-|---------|---------|
-| Upload any image | ![Upload](assets/Screenshots/upload.png) |
-| Canvas editor with drag & zoom | ![Editor](assets/Screenshots/editor.png) |
-| Background picker & color presets | ![Background](assets/Screenshots/background.png) |
-| Monochrome threshold control | ![Monochrome](assets/Screenshots/monochrome.png) |
-| Live mask previews (circle, squircle, iOS) | ![Masks](assets/Screenshots/masks.png) |
-| Device mockups (Pixel & iPhone) | ![Mockups](assets/Screenshots/mockups.png) |
-| Export Android & iOS ZIPs | ![Export](assets/Screenshots/export.png) |
+| Step | Preview |
+|------|---------|
+| Upload your image | ![Upload](assets/ScreenShots/Upload.png) |
+| Edit, position & export | ![Website](assets/ScreenShots/Website.png) |
 
 <details>
 <summary><strong>Full Preview — Upload to Final Icon</strong></summary>
 
 **Step 1: Upload your image**
 
-![Upload](assets/Screenshots/upload.png)
+![Upload](assets/ScreenShots/Upload.png)
 
 **Step 2: Edit, position, and export**
 
-![Website](assets/Screenshots/website.png)
+![Website](assets/ScreenShots/Website.png)
 
 </details>
 
